@@ -809,45 +809,6 @@ export class DbStorage implements IStorage {
   
   private async initializeDefaultData() {
     try {
-      const existingAdmin = await this.getUserByUsername("prova@amministratore.it");
-      if (!existingAdmin) {
-        const salt = "c0ffee12deadbeef34abcd5678";
-        const password = "Prova2025!";
-        const hashedPassword = createHash('sha256').update(password + salt).digest('hex') + "." + salt;
-        
-        await this.createUser({
-          username: "prova@amministratore.it",
-          password: hashedPassword,
-          firstName: "Admin",
-          lastName: "System",
-          groupName: "Admin",
-          email: "prova@amministratore.it",
-          isAdmin: true,
-          isCoordinator: false
-        });
-        console.log("Utente amministratore principale creato");
-      }
-      
-      const existingUserAdmin = await this.getUserByUsername("gestione@amministratore.it");
-      if (!existingUserAdmin) {
-        const salt = "f1b2c3d4e5f6789abcdef123";
-        const password = "Gestione2025!";
-        const hashedPassword = createHash('sha256').update(password + salt).digest('hex') + "." + salt;
-        
-        await this.createUser({
-          username: "gestione@amministratore.it",
-          password: hashedPassword,
-          firstName: "Gestione",
-          lastName: "Utenti",
-          groupName: "Admin",
-          email: "gestione@amministratore.it",
-          isAdmin: false,
-          isCoordinator: false,
-          isUserAdmin: true
-        });
-        console.log("Utente amministratore per gestione utenti creato");
-      }
-      
       const existingProducts = await this.getProducts();
       if (existingProducts.length === 0) {
         await this.initializeProducts();

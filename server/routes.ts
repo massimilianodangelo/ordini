@@ -10,9 +10,18 @@ async function ensureDefaultAdmin() {
   try {
     const existingAdmin = await storage.getUserByUsername("admin@grouporder.com");
     if (!existingAdmin) {
-      console.log("Creating default admin account...");
-      const salt = "c0ffee12deadbeef34abcd5678";
-      const hashedPassword = createHash('sha256').update("admin123" + salt).digest('hex');
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      
+      if (!adminPassword) {
+        console.warn("⚠️  ADMIN_PASSWORD non impostata. Nessun utente amministratore creato.");
+        console.warn("⚠️  Per creare un amministratore, imposta la variabile d'ambiente ADMIN_PASSWORD e riavvia il server.");
+        return;
+      }
+      
+      console.log("Creazione account amministratore...");
+      const crypto = await import('crypto');
+      const salt = crypto.randomBytes(16).toString('hex');
+      const hashedPassword = createHash('sha256').update(adminPassword + salt).digest('hex');
       
       await storage.createUser({
         username: "admin@grouporder.com",
@@ -25,10 +34,10 @@ async function ensureDefaultAdmin() {
         isAdmin: true,
         isUserAdmin: true
       });
-      console.log("Default admin account created successfully");
+      console.log("✅ Account amministratore creato con successo");
     }
   } catch (error) {
-    console.error("Error creating default admin:", error);
+    console.error("Errore nella creazione dell'amministratore:", error);
   }
 }
 
