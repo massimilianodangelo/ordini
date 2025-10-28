@@ -1,8 +1,13 @@
-import { users, type User, type InsertUser, products, type Product, type InsertProduct, orders, type Order, type InsertOrder, orderItems, type OrderItem, type InsertOrderItem } from "@shared/schema";
+import { users, type User, type InsertUser, products, type Product, type InsertProduct, orders, type Order, type InsertOrder, orderItems, type OrderItem, type InsertOrderItem, availableGroups, type AvailableGroup, type InsertAvailableGroup } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import fs from 'fs';
 import path from 'path';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { neon } from '@neondatabase/serverless';
+import { eq, and, sql } from 'drizzle-orm';
+import connectPgSimple from 'connect-pg-simple';
+import { createHash } from 'crypto';
 
 // Crea una directory di storage se non esiste
 const storageDir = path.join(process.cwd(), 'storage');
@@ -778,4 +783,386 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database Storage implementation using PostgreSQL
+export class DbStorage implements IStorage {
+  private db;
+  public sessionStore: SessionStore;
+  
+  constructor() {
+    const databaseUrl = process.env.DATABASE_URL;
+    
+    if (!databaseUrl) {
+      throw new Error("DATABASE_URL environment variable is not set");
+    }
+    
+    const sql = neon(databaseUrl);
+    this.db = drizzle(sql);
+    
+    const PgSession = connectPgSimple(session);
+    this.sessionStore = new PgSession({
+      conString: databaseUrl,
+      createTableIfMissing: true,
+    });
+    
+    this.initializeDefaultData();
+  }
+  
+  private async initializeDefaultData() {
+    try {
+      const existingAdmin = await this.getUserByUsername("prova@amministratore.it");
+      if (!existingAdmin) {
+        const salt = "c0ffee12deadbeef34abcd5678";
+        const password = "Prova2025!";
+        const hashedPassword = createHash('sha256').update(password + salt).digest('hex') + "." + salt;
+        
+        await this.createUser({
+          username: "prova@amministratore.it",
+          password: hashedPassword,
+          firstName: "Admin",
+          lastName: "System",
+          groupName: "Admin",
+          email: "prova@amministratore.it",
+          isAdmin: true,
+          isCoordinator: false
+        });
+        console.log("Utente amministratore principale creato");
+      }
+      
+      const existingUserAdmin = await this.getUserByUsername("gestione@amministratore.it");
+      if (!existingUserAdmin) {
+        const salt = "f1b2c3d4e5f6789abcdef123";
+        const password = "Gestione2025!";
+        const hashedPassword = createHash('sha256').update(password + salt).digest('hex') + "." + salt;
+        
+        await this.createUser({
+          username: "gestione@amministratore.it",
+          password: hashedPassword,
+          firstName: "Gestione",
+          lastName: "Utenti",
+          groupName: "Admin",
+          email: "gestione@amministratore.it",
+          isAdmin: false,
+          isCoordinator: false,
+          isUserAdmin: true
+        });
+        console.log("Utente amministratore per gestione utenti creato");
+      }
+      
+      const existingProducts = await this.getProducts();
+      if (existingProducts.length === 0) {
+        await this.initializeProducts();
+      }
+    } catch (error) {
+      console.error("Errore nell'inizializzazione dati:", error);
+    }
+  }
+  
+  private async initializeProducts() {
+    const sampleProducts: InsertProduct[] = [
+      {
+        name: "TRAMEZZINO TONNO E POMODORO",
+        description: "Tramezzino con tonno e pomodoro",
+        price: 2.00,
+        category: "Tramezzini",
+        available: true
+      },
+      {
+        name: "TRAMEZZINO PROSCIUTTO COTTO",
+        description: "Tramezzino con prosciutto cotto e formaggio edamer",
+        price: 2.00,
+        category: "Tramezzini",
+        available: true
+      },
+      {
+        name: "TRAMEZZINO PROSCIUTTO CRUDO",
+        description: "Tramezzino con prosciutto crudo e formaggio edamer",
+        price: 2.00,
+        category: "Tramezzini",
+        available: true
+      },
+      {
+        name: "TRAMEZZINO SALAME",
+        description: "Tramezzino con salame e formaggio edamer",
+        price: 2.00,
+        category: "Tramezzini",
+        available: true
+      },
+      {
+        name: "CALZONE AL FORNO",
+        description: "Calzone al forno con prosciutto cotto e mozzarella",
+        price: 2.00,
+        category: "Calzoni",
+        available: true
+      },
+      {
+        name: "PANINO TONDO PROSCIUTTO CRUDO",
+        description: "Panino tondo con prosciutto crudo",
+        price: 2.50,
+        category: "Panini",
+        available: true
+      },
+      {
+        name: "PANINO TONDO PETTO DI TACCHINO",
+        description: "Panino tondo con petto di tacchino arrosto, rucola, grana e olio d'oliva",
+        price: 2.50,
+        category: "Panini",
+        available: true
+      },
+      {
+        name: "PANINO TONDO PROSCIUTTO COTTO",
+        description: "Panino tondo con prosciutto cotto",
+        price: 2.50,
+        category: "Panini",
+        available: true
+      },
+      {
+        name: "PANINO TONDO SALAME",
+        description: "Panino tondo con salame",
+        price: 2.50,
+        category: "Panini",
+        available: true
+      },
+      {
+        name: "PANINO TONDO HAMBURGER",
+        description: "Panino tondo con hamburger di manzo, lattuga e pomodoro",
+        price: 2.50,
+        category: "Panini",
+        available: true
+      },
+      {
+        name: "PIZZA BIANCA SEMPLICE",
+        description: "Pizza bianca semplice",
+        price: 1.00,
+        category: "Pizze",
+        available: true
+      },
+      {
+        name: "PIZZA ROSSA SEMPLICE",
+        description: "Pizza rossa con pomodoro",
+        price: 1.50,
+        category: "Pizze",
+        available: true
+      },
+      {
+        name: "PIZZA PATATE",
+        description: "Pizza con patate",
+        price: 1.50,
+        category: "Pizze",
+        available: true
+      }
+    ];
+
+    for (const product of sampleProducts) {
+      await this.createProduct(product);
+    }
+    console.log("Prodotti iniziali creati");
+  }
+  
+  async getUser(id: number): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.id, id));
+    return result[0];
+  }
+  
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.username, username));
+    return result[0];
+  }
+  
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const result = await this.db.insert(users).values(insertUser).returning();
+    return result[0];
+  }
+  
+  async getAllUsers(): Promise<User[]> {
+    return await this.db.select().from(users);
+  }
+  
+  async updateUser(id: number, userData: Partial<InsertUser>): Promise<User | undefined> {
+    const result = await this.db.update(users).set(userData).where(eq(users.id, id)).returning();
+    return result[0];
+  }
+  
+  async deleteUser(id: number): Promise<boolean> {
+    const result = await this.db.delete(users).where(eq(users.id, id)).returning();
+    return result.length > 0;
+  }
+  
+  async promoteMembers(): Promise<{ updated: number, groups: { from: string, to: string }[], deleted: number }> {
+    const updatedGroups: { from: string, to: string }[] = [];
+    let updatedCount = 0;
+    let deletedCount = 0;
+    
+    const allUsers = await this.getAllUsers();
+    const members = allUsers.filter(user => user.groupName !== "Admin");
+    
+    for (const member of members) {
+      const groupName = member.groupName;
+      const match = groupName.match(/^(.+)\s+(\d+)$/);
+      
+      if (match) {
+        const groupType = match[1];
+        const currentLevel = parseInt(match[2], 10);
+        
+        if (currentLevel >= 5) {
+          await this.deleteUser(member.id);
+          deletedCount++;
+          console.log(`Eliminato membro ${member.firstName} ${member.lastName} del gruppo ${groupName}`);
+        } else {
+          const newLevel = currentLevel + 1;
+          const newGroupName = `${groupType} ${newLevel}`;
+          
+          await this.updateUser(member.id, { groupName: newGroupName });
+          updatedCount++;
+          
+          const update = { from: groupName, to: newGroupName };
+          if (!updatedGroups.some(ug => ug.from === update.from && ug.to === update.to)) {
+            updatedGroups.push(update);
+          }
+        }
+      }
+    }
+    
+    return { updated: updatedCount, groups: updatedGroups, deleted: deletedCount };
+  }
+  
+  async getProducts(): Promise<Product[]> {
+    return await this.db.select().from(products);
+  }
+  
+  async getProductsByCategory(category: string): Promise<Product[]> {
+    if (category === "All") {
+      return await this.db.select().from(products);
+    }
+    return await this.db.select().from(products).where(eq(products.category, category));
+  }
+  
+  async getProduct(id: number): Promise<Product | undefined> {
+    const result = await this.db.select().from(products).where(eq(products.id, id));
+    return result[0];
+  }
+  
+  async createProduct(insertProduct: InsertProduct): Promise<Product> {
+    const result = await this.db.insert(products).values(insertProduct).returning();
+    return result[0];
+  }
+  
+  async updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined> {
+    const result = await this.db.update(products).set(product).where(eq(products.id, id)).returning();
+    return result[0];
+  }
+  
+  async deleteProduct(id: number): Promise<boolean> {
+    const result = await this.db.delete(products).where(eq(products.id, id)).returning();
+    return result.length > 0;
+  }
+  
+  async getOrders(): Promise<Order[]> {
+    return await this.db.select().from(orders);
+  }
+  
+  async getOrdersByUser(userId: number): Promise<Order[]> {
+    return await this.db.select().from(orders).where(eq(orders.userId, userId));
+  }
+  
+  async getOrdersByDate(date: Date): Promise<Order[]> {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+    
+    return await this.db.select().from(orders).where(
+      and(
+        sql`${orders.orderDate} >= ${startOfDay}`,
+        sql`${orders.orderDate} <= ${endOfDay}`
+      )
+    );
+  }
+  
+  async getOrdersByGroup(groupName: string): Promise<Order[]> {
+    const allOrders = await this.db.select().from(orders);
+    const result: Order[] = [];
+    
+    for (const order of allOrders) {
+      const user = await this.getUser(order.userId);
+      if (user && user.groupName && groupName && 
+          user.groupName.toLowerCase() === groupName.toLowerCase()) {
+        result.push(order);
+      }
+    }
+    
+    return result;
+  }
+  
+  async getOrderById(id: number): Promise<Order | undefined> {
+    const result = await this.db.select().from(orders).where(eq(orders.id, id));
+    return result[0];
+  }
+  
+  async createOrder(insertOrder: InsertOrder): Promise<Order> {
+    const result = await this.db.insert(orders).values(insertOrder).returning();
+    return result[0];
+  }
+  
+  async updateOrderStatus(id: number, status: string): Promise<Order | undefined> {
+    const result = await this.db.update(orders).set({ status }).where(eq(orders.id, id)).returning();
+    return result[0];
+  }
+  
+  async getOrderItems(orderId: number): Promise<OrderItem[]> {
+    return await this.db.select().from(orderItems).where(eq(orderItems.orderId, orderId));
+  }
+  
+  async createOrderItem(insertOrderItem: InsertOrderItem): Promise<OrderItem> {
+    const result = await this.db.insert(orderItems).values(insertOrderItem).returning();
+    return result[0];
+  }
+  
+  async getAvailableGroups(): Promise<string[]> {
+    try {
+      const groups = await this.db.select().from(availableGroups);
+      
+      if (groups.length > 0) {
+        return groups.map(g => g.name).sort();
+      }
+      
+      const allUsers = await this.getAllUsers();
+      const userGroups = Array.from(new Set(
+        allUsers
+          .map(user => user.groupName)
+          .filter(Boolean)
+          .filter(groupName => groupName !== "Admin")
+      )).sort();
+      
+      if (userGroups.length === 0) {
+        const defaultGroups = [
+          "Team A", "Team B", "Team C", "Team D", "Team E",
+          "Office 1", "Office 2", "Office 3",
+          "Department 1", "Department 2", "Department 3"
+        ];
+        return defaultGroups;
+      }
+      
+      return userGroups;
+    } catch (error) {
+      console.error("Errore nel recupero dei gruppi:", error);
+      return [];
+    }
+  }
+  
+  async updateAvailableGroups(groups: string[]): Promise<string[]> {
+    try {
+      await this.db.delete(availableGroups);
+      
+      for (const groupName of groups) {
+        await this.db.insert(availableGroups).values({ name: groupName });
+      }
+      
+      return groups.sort();
+    } catch (error) {
+      console.error("Errore nell'aggiornamento dei gruppi:", error);
+      return [];
+    }
+  }
+}
+
+export const storage = process.env.DATABASE_URL ? new DbStorage() : new MemStorage();
