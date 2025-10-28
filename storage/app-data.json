@@ -1,0 +1,402 @@
+{
+  "appData": {
+    "users": [
+      [
+        2,
+        {
+          "username": "gestione@amministratore.it",
+          "password": "bfc7bed24a7cbf6e4ee32f87512e53b3d9e963ebe29e4730e4f2825f0a90f703ddfd90cf31c915986b346ff824dbce42691117c32a45648d20e8ed324d1db8d9.1af100a26ac7af39065e9929520b4885",
+          "firstName": "Gestione",
+          "lastName": "Utenti",
+          "classRoom": "Admin",
+          "email": "gestione@amministratore.it",
+          "isRepresentative": false,
+          "isAdmin": false,
+          "isUserAdmin": true,
+          "id": 2
+        }
+      ],
+      [
+        1,
+        {
+          "username": "prova@amministratore.it",
+          "password": "2d836d0159982302aeb92485af462eb7fdd8c0d46cbd40f65437d020e4223d4716199f69b0c3d3b3ad2a5262ba183e806a1fd5d61740ab4fd479be87c286e306.648e1aedc9cc3f1c7e2319d2a8a6f5d0",
+          "firstName": "Prova",
+          "lastName": "Ordini",
+          "classRoom": "Admin",
+          "email": "prova@amministratore.it",
+          "isRepresentative": false,
+          "isAdmin": true,
+          "isUserAdmin": false,
+          "id": 1
+        }
+      ],
+      [
+        4,
+        {
+          "firstName": "massimiliano",
+          "lastName": "rossi",
+          "classRoom": "1A",
+          "username": "massimiliano@gmail.com",
+          "email": "massimiliano@gmail.com",
+          "password": "781e37f97d01eda2443b83ba6b6258e11d82ee3d4032ee2e8d8afea3a31eaf70fa24283d910254775d970e4e522484f9656083e744dc7abf3762d051f9e78720.5d5dc3c896aa6d10e5a74003ba7aaa64",
+          "isRepresentative": false,
+          "id": 4,
+          "isAdmin": false,
+          "isUserAdmin": false,
+          "groupName": "Department 1",
+          "isCoordinator": true
+        }
+      ],
+      [
+        3,
+        {
+          "username": "admin@grouporder.com",
+          "password": "cd85d39dfc81d9c67f3e75a9020a61e801cae0ad3513b8a0dc36473db3c059c7.c0ffee12deadbeef34abcd5678",
+          "firstName": "System",
+          "lastName": "Administrator",
+          "groupName": "Admin",
+          "isCoordinator": true,
+          "isAdmin": true,
+          "isUserAdmin": true,
+          "id": 3
+        }
+      ]
+    ],
+    "products": [
+      [
+        1,
+        {
+          "name": "TRAMEZZINO TONNO E POMODORO",
+          "description": "Tramezzino con tonno e pomodoro",
+          "price": 2,
+          "category": "Snacks",
+          "available": true,
+          "id": 1
+        }
+      ],
+      [
+        2,
+        {
+          "name": "TRAMEZZINO PROSCIUTTO COTTO",
+          "description": "Tramezzino con prosciutto cotto e formaggio edamer",
+          "price": 2,
+          "category": "Snacks",
+          "available": true,
+          "id": 2
+        }
+      ],
+      [
+        3,
+        {
+          "name": "TRAMEZZINO PROSCIUTTO CRUDO",
+          "description": "Tramezzino con prosciutto crudo e formaggio edamer",
+          "price": 2,
+          "category": "Snacks",
+          "available": true,
+          "id": 3
+        }
+      ],
+      [
+        4,
+        {
+          "name": "TRAMEZZINO SALAME",
+          "description": "Tramezzino con salame e formaggio edamer",
+          "price": 2,
+          "category": "Snacks",
+          "available": true,
+          "id": 4
+        }
+      ],
+      [
+        5,
+        {
+          "name": "CALZONE AL FORNO",
+          "description": "Calzone al forno con prosciutto cotto e mozzarella",
+          "price": 2,
+          "category": "Food",
+          "available": true,
+          "id": 5
+        }
+      ],
+      [
+        6,
+        {
+          "name": "PANINO TONDO PROSCIUTTO CRUDO",
+          "description": "Panino tondo con prosciutto crudo",
+          "price": 2.5,
+          "category": "Food",
+          "available": true,
+          "id": 6
+        }
+      ],
+      [
+        7,
+        {
+          "name": "PANINO TONDO PETTO DI TACCHINO",
+          "description": "Panino tondo con petto di tacchino arrosto, rucola, grana e olio d'oliva",
+          "price": 2.5,
+          "category": "Food",
+          "available": true,
+          "id": 7
+        }
+      ],
+      [
+        8,
+        {
+          "name": "PANINO TONDO PROSCIUTTO COTTO",
+          "description": "Panino tondo con prosciutto cotto",
+          "price": 2.5,
+          "category": "Food",
+          "available": true,
+          "id": 8
+        }
+      ],
+      [
+        9,
+        {
+          "name": "PANINO TONDO SALAME",
+          "description": "Panino tondo con salame",
+          "price": 2.5,
+          "category": "Food",
+          "available": true,
+          "id": 9
+        }
+      ],
+      [
+        10,
+        {
+          "name": "PANINO TONDO HAMBURGER",
+          "description": "Panino tondo con hamburger di manzo, lattuga e pomodoro",
+          "price": 2.5,
+          "category": "Food",
+          "available": true,
+          "id": 10
+        }
+      ],
+      [
+        11,
+        {
+          "name": "PIZZA BIANCA SEMPLICE",
+          "description": "Pizza bianca semplice",
+          "price": 1,
+          "category": "Food",
+          "available": true,
+          "id": 11
+        }
+      ],
+      [
+        12,
+        {
+          "name": "PIZZA ROSSA SEMPLICE",
+          "description": "Pizza rossa con pomodoro",
+          "price": 1.5,
+          "category": "Food",
+          "available": true,
+          "id": 12
+        }
+      ],
+      [
+        13,
+        {
+          "name": "PIZZA PATATE",
+          "description": "Pizza con patate",
+          "price": 1.5,
+          "category": "Food",
+          "available": true,
+          "id": 13
+        }
+      ]
+    ],
+    "orders": [
+      [
+        17,
+        {
+          "userId": 4,
+          "status": "cancelled",
+          "total": 5,
+          "orderDate": "2025-05-09T20:06:44.891Z",
+          "id": 17,
+          "createdAt": "2025-05-09T20:06:44.497Z"
+        }
+      ],
+      [
+        18,
+        {
+          "userId": 4,
+          "status": "completed",
+          "total": 13,
+          "orderDate": "2025-05-09T20:08:26.549Z",
+          "id": 18,
+          "createdAt": "2025-05-09T20:08:26.110Z"
+        }
+      ],
+      [
+        19,
+        {
+          "userId": 4,
+          "status": "completed",
+          "total": 4.5,
+          "orderDate": "2025-10-26T18:52:42.030Z",
+          "id": 19,
+          "createdAt": "2025-10-26T18:52:42.252Z"
+        }
+      ]
+    ],
+    "orderItems": [
+      [
+        29,
+        {
+          "orderId": 17,
+          "productId": 6,
+          "quantity": 1,
+          "price": 2.5,
+          "id": 29
+        }
+      ],
+      [
+        30,
+        {
+          "orderId": 17,
+          "productId": 7,
+          "quantity": 1,
+          "price": 2.5,
+          "id": 30
+        }
+      ],
+      [
+        31,
+        {
+          "orderId": 18,
+          "productId": 1,
+          "quantity": 1,
+          "price": 2,
+          "id": 31
+        }
+      ],
+      [
+        32,
+        {
+          "orderId": 18,
+          "productId": 11,
+          "quantity": 1,
+          "price": 1,
+          "id": 32
+        }
+      ],
+      [
+        33,
+        {
+          "orderId": 18,
+          "productId": 10,
+          "quantity": 1,
+          "price": 2.5,
+          "id": 33
+        }
+      ],
+      [
+        34,
+        {
+          "orderId": 18,
+          "productId": 5,
+          "quantity": 1,
+          "price": 2,
+          "id": 34
+        }
+      ],
+      [
+        35,
+        {
+          "orderId": 18,
+          "productId": 9,
+          "quantity": 1,
+          "price": 2.5,
+          "id": 35
+        }
+      ],
+      [
+        36,
+        {
+          "orderId": 18,
+          "productId": 13,
+          "quantity": 2,
+          "price": 1.5,
+          "id": 36
+        }
+      ],
+      [
+        37,
+        {
+          "orderId": 19,
+          "productId": 6,
+          "quantity": 1,
+          "price": 2.5,
+          "id": 37
+        }
+      ],
+      [
+        38,
+        {
+          "orderId": 19,
+          "productId": 2,
+          "quantity": 1,
+          "price": 2,
+          "id": 38
+        }
+      ]
+    ],
+    "userId": 23,
+    "productId": 14,
+    "orderId": 20,
+    "orderItemId": 39,
+    "deletedUserIds": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  "availableClasses": [
+    "1A",
+    "1B",
+    "1C",
+    "1D",
+    "1E",
+    "1F",
+    "1G",
+    "1H",
+    "2A",
+    "2B",
+    "2C",
+    "2D",
+    "2E",
+    "2F",
+    "2G",
+    "2H",
+    "2L",
+    "3A",
+    "3B",
+    "3C",
+    "3D",
+    "3E",
+    "3F",
+    "3G",
+    "3H",
+    "3L",
+    "4A",
+    "4B",
+    "4C",
+    "4D",
+    "4E",
+    "4F",
+    "4H",
+    "5A",
+    "5B",
+    "5C",
+    "5D",
+    "5E",
+    "5F",
+    "5H"
+  ]
+}
