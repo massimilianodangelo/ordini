@@ -62,6 +62,16 @@ export const insertOrderItemSchema = createInsertSchema(orderItems).omit({
   id: true,
 });
 
+// Available groups model
+export const availableGroups = pgTable("available_groups", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+});
+
+export const insertAvailableGroupSchema = createInsertSchema(availableGroups).omit({
+  id: true,
+});
+
 // Export types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -74,6 +84,9 @@ export type InsertOrder = z.infer<typeof insertOrderSchema>;
 
 export type OrderItem = typeof orderItems.$inferSelect;
 export type InsertOrderItem = z.infer<typeof insertOrderItemSchema>;
+
+export type AvailableGroup = typeof availableGroups.$inferSelect;
+export type InsertAvailableGroup = z.infer<typeof insertAvailableGroupSchema>;
 
 // Product category enum - Generic categories for various use cases
 export const ProductCategories = {
