@@ -1,4 +1,4 @@
-paratie-tonco-4t@icloud.comimport { Shield } from "lucide-react";
+import { Shield } from "lucide-react";
 
 export function CopyrightFooter() {
   const isDemoMode = import.meta.env.VITE_DEMO_MODE === "true";
