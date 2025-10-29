@@ -1,4 +1,4 @@
-import { Shield } from "lucide-react";
+paratie-tonco-4t@icloud.comimport { Shield } from "lucide-react";
 
 export function CopyrightFooter() {
   const isDemoMode = import.meta.env.VITE_DEMO_MODE === "true";
@@ -11,7 +11,7 @@ export function CopyrightFooter() {
         <div className="flex items-center justify-center space-x-2 text-sm">
           <Shield className="h-4 w-4" />
           <span>
-            © {new Date().getFullYear()} GroupOrder Hub - All Rights Reserved. 
+            © {new Date().getFullYear()} GroupOrder Hub - Developed by Massimiliano D'Angelo - All Rights Reserved. 
             This is a demo version. Unauthorized reproduction, distribution, or modification of this software is strictly prohibited.
           </span>
         </div>
