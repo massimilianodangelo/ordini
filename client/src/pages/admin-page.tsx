@@ -687,7 +687,11 @@ export default function AdminPage() {
                 <CardTitle>Product Management</CardTitle>
                 <Dialog open={isAddProductOpen} onOpenChange={setIsAddProductOpen}>
                   <DialogTrigger asChild>
-                    <Button size="sm">
+                    <Button 
+                      size="sm" 
+                      disabled={user?.email === "prova@amministratore.it"}
+                      data-testid="button-new-product"
+                    >
                       <Plus className="h-4 w-4 mr-1" /> New Product
                     </Button>
                   </DialogTrigger>
