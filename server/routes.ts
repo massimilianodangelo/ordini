@@ -147,6 +147,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Log per debug
       console.log("POST /api/products - Authentication status:", req.isAuthenticated(), "- User:", req.user);
       
+      // Blocca l'aggiunta di prodotti per l'utente demo in modalità demo
+      if (isDemoMode && req.user?.email === "prova@amministratore.it") {
+        return res.status(403).json({ message: "Product creation is disabled for demo user" });
+      }
+      
       // Validare i dati del prodotto
       const productData = {
         name: req.body.name,
